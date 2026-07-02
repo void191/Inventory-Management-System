@@ -1184,7 +1184,12 @@ app.get('/api/cashier/transactions', verifyToken, requireRole(['admin', 'cashier
   }
 });
 
-// Start backend server
-app.listen(PORT, () => {
-  console.log(`Grainhouse API Server running on port ${PORT}`);
-});
+// Start backend server (local only)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Grainhouse API Server running on port ${PORT}`);
+  });
+}
+
+// Export the app for Vercel Serverless Functions
+export default app;
