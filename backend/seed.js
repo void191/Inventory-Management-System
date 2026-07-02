@@ -36,15 +36,18 @@ async function seed() {
     const managerHash = await bcrypt.hash('Manager1234!', saltRounds);
     const viewerHash = await bcrypt.hash('Viewer1234!', saltRounds);
     const cashierHash = await bcrypt.hash('Cashier1234!', saltRounds);
+    const adminPerms = JSON.stringify({ view_dashboard: true, view_products: true, add_products: true, edit_products: true, delete_products: true, view_stock_levels: true, view_purchase_orders: true, create_purchase_orders: true, receive_purchase_orders: true, view_sales_orders: true, create_sales_orders: true, ship_sales_orders: true, view_cashier: true, use_cashier: true, view_warehouses: true, view_suppliers: true, view_stock_movements: true, view_reports: true, view_users: true });
+    const managerPerms = JSON.stringify({ view_dashboard: true, view_products: true, add_products: true, edit_products: true, view_stock_levels: true, view_purchase_orders: true, create_purchase_orders: true, receive_purchase_orders: true, view_sales_orders: true, create_sales_orders: true, ship_sales_orders: true, view_warehouses: true, view_suppliers: true, view_stock_movements: true, view_reports: true });
+    const viewerPerms = JSON.stringify({ view_dashboard: true, view_products: true, view_stock_levels: true, view_purchase_orders: true, view_sales_orders: true, view_warehouses: true, view_suppliers: true, view_stock_movements: true, view_reports: true });
+    const cashierPerms = JSON.stringify({ view_dashboard: true, view_products: true, view_cashier: true, use_cashier: true });
 
     await client.query(`
-      INSERT INTO users (full_name, email, password_hash, role_id) VALUES
-      ('System Administrator', 'admin@grainhouse.com', $1, $5),
-      ('Warehouse Manager', 'manager@grainhouse.com', $2, $6),
-      ('Operations Viewer', 'viewer@grainhouse.com', $3, $7),
-      ('Cashier Staff', 'cashier@grainhouse.com', $4, $8);
-    `, [adminHash, managerHash, viewerHash, cashierHash, roles['admin'], roles['manager'], roles['viewer'], roles['cashier']]);
-
+      INSERT INTO users (full_name, email, password_hash, role_id, permissions) VALUES
+      ('System Administrator', 'admin@grainhouse.com', $1, $5, $9),
+      ('Warehouse Manager', 'manager@grainhouse.com', $2, $6, $10),
+      ('Operations Viewer', 'viewer@grainhouse.com', $3, $7, $11),
+      ('Cashier Staff', 'cashier@grainhouse.com', $4, $8, $12);
+    `, [adminHash, managerHash, viewerHash, cashierHash, roles['admin'], roles['manager'], roles['viewer'], roles['cashier'], adminPerms, managerPerms, viewerPerms, cashierPerms]);
     // 4. Insert Suppliers
     console.log('Inserting suppliers...');
     const suppliersRes = await client.query(`

@@ -1,4 +1,5 @@
 -- Drop existing tables
+DROP TABLE IF EXISTS cash_transactions CASCADE;
 DROP TABLE IF EXISTS contracts CASCADE;
 DROP TABLE IF EXISTS stock_movements CASCADE;
 DROP TABLE IF EXISTS sales_order_lines CASCADE;
@@ -25,6 +26,7 @@ CREATE TABLE users (
   email VARCHAR(150) UNIQUE NOT NULL,
   password_hash TEXT NOT NULL,
   role_id INTEGER REFERENCES roles(id),
+  permissions JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP DEFAULT NOW(),
   is_active BOOLEAN DEFAULT TRUE
 );
